@@ -1,0 +1,62 @@
+
+# ================================
+# Python runtime / cache
+# ================================
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.ipynb_checkpoints/
+
+# ================================
+# Virtual environments
+# ================================
+.venv/
+venv/
+env/
+.env/
+.env.*
+.env
+
+
+# ================================
+# OS / editor noise
+# ================================
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# ================================
+# Logs / temp files
+# ================================
+*.log
+*.tmp
+
+# ================================
+# Vector database (local state)
+# ================================
+# Chroma vector store contains embeddings + metadata
+# These are generated locally and should NOT be committed
+data/chroma/
+*.sqlite3
+
+# ================================
+# Large / private documents
+# ================================
+# Example PDFs may be included selectively
+# Ignore everything by default, allow whitelisted samples
+data/*.pdf
+!data/sample.pdf
+
+# ================================
+# Archives / experiments
+# ================================
+archive/
+
+# ================================
+# Jupyter / exploratory work
+# ================================
+notebooks/
+
