@@ -1,42 +1,83 @@
-# Retrieval-Augmented Generation (RAG) – Beginner Lab (Enterprise-Oriented)
+# Retrieval-Augmented Generation (RAG) Beginner Lab
 
 ## Overview
 
-This repository contains a **concept-first, enterprise-aligned lab** that demonstrates how **Retrieval-Augmented Generation (RAG)** systems are designed and implemented on **enterprise data platforms**.
+This repository contains a concept-first beginner lab for Retrieval-Augmented Generation (RAG). It demonstrates how a PDF document becomes searchable semantic memory, how retrieval and generation are separated, and how answers can be grounded in retrieved context.
 
-Rather than focusing on prompt tricks or API usage, this lab explains:
-- how documents become **searchable semantic memory**
-- how retrieval and generation are **separated by design**
-- how AI answers can be **grounded, explainable, and auditable**
+The implementation is intentionally small: local Python scripts, a persistent Chroma vector store, OpenAI embeddings, and an OpenAI chat model for grounded answer synthesis.
 
-The architecture and patterns used here mirror how RAG is implemented in **real enterprise AI platforms**, especially in regulated or data-sensitive environments.
+## Architecture Summary
 
----
+The lab has two primary runtime phases:
 
-## Who This Is For
+1. `src/index.py` reads a PDF, extracts text, chunks it, creates embeddings, and persists the resulting collection in Chroma.
+2. `src/query.py` loads the matching collection, retrieves relevant chunks, and asks the model to answer using only the retrieved context.
 
-- Beginners learning what RAG *actually is*
-- Data engineers / data architects moving into **AI platform design**
-- Solution architects exploring **enterprise GenAI adoption**
-- Trainers and educators teaching **conceptual AI system design**
+`src/visualize_embeddings.py` is optional and exists only to help learners understand embeddings in vector space.
 
-No prior knowledge of RAG or AI systems is assumed.
+## Repository Structure
 
----
+| Path | Purpose |
+|---|---|
+| `src/index.py` | Index a PDF into a persistent Chroma collection. |
+| `src/query.py` | Retrieve context and generate a grounded answer. |
+| `src/visualize_embeddings.py` | Optional embedding visualization demo. |
+| `labs/` | Lab instructions and tutorial materials. |
+| `slides/` | Presentation assets for the lab. |
+| `data/` | Local PDFs and generated Chroma state. |
+| `design/architecture.md` | Architecture and operational notes. |
+| `design/issues-pending-review.md` | SIT results and issues for review. |
+| `src_archives/` | Housekeeping archive for legacy code moved out of active paths. |
 
-## What Problem This Lab Addresses
+## Setup
 
-Large Language Models (LLMs):
-- do not know your internal documents
-- cannot safely reason over proprietary data
-- may hallucinate without clear evidence
+Create and activate a virtual environment, then install dependencies:
 
-This lab demonstrates how RAG solves those problems by:
-- retrieving information from **your data**
-- constraining the model to retrieved context
-- enabling **traceability and citations**
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements.txt
+```
 
----
+Create a local `.env` or export environment variables with the required OpenAI API credentials. Do not commit `.env` or secret values.
 
-## High-Level Architecture
+## Run
 
+Index a PDF:
+
+```bash
+python src/index.py data/microsoft-annual-report.pdf
+```
+
+Query the indexed collection:
+
+```bash
+python src/query.py data/microsoft-annual-report.pdf
+```
+
+The query script currently uses the built-in lab question: `What was the total revenue for the year?`
+
+## Test / SIT
+
+Housekeeping SIT results:
+
+| Command | Result | Notes |
+|---|---|---|
+| `.venv/bin/python -m py_compile src/index.py src/query.py src/visualize_embeddings.py` | Passed | Validates syntax for the runtime scripts. |
+| Python dependency import smoke check | Passed | Dependency imports passed after installing `requirements.txt` in `.venv`. |
+
+Full end-to-end indexing and query checks require OpenAI API credentials and may call external model APIs.
+
+## Configuration
+
+The scripts load environment variables with `python-dotenv`. The main required configuration is OpenAI API access. Generated vector-store state is written under `data/chroma/`.
+
+## Documentation
+
+- Architecture: `design/architecture.md`
+- Pending review issues: `design/issues-pending-review.md`
+- Lab structure map: `labs/Lab_Structure_Map.md`
+
+## Current Status
+
+Housekeeping on 2026-05-18 created architecture documentation, recorded pending review issues, and moved ignored legacy archive files into `src_archives/2026-05-18_housekeeping/`.
